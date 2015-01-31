@@ -1,0 +1,7 @@
+{
+    "main": "solr.js",
+    "auto-redeploy" : true,
+    "description" : "Vert.x Module to offer a Solr interface into the Vert.x Event Bus",
+    "licenses": ["The Apache Software License Version 2.0"],
+    "author" : "Guillem Salas < guillem@gzzz.eu >"
+}
