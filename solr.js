@@ -31,16 +31,31 @@ function serializeBatch(json) {
 	return "{" + rootKeys.join(",") + "}";
 }
 
-function sendUpdate(batch, reply) {
+function encodeQueryParams(o) {
+    if (typeof o !== 'object') return '';
+    var k, p = [];
+    for (k in o) {
+        if (o.hasOwnProperty(k)) {
+            p.push(encodeURIComponent(k) + '=' + encodeURIComponent(o[k]));
+        }
+    }
+    return p.join('&');
+}
+
+function collectionOrDefault(options) {
+	return options.collection != null ? options.collection : config.defaultCollection;
+}
+
+function updateRequest(collection,params,replier) {
 	var path = [config.solrPath],
-		collection = batch.collection || config.defaultCollection,
+		queryString = encodeQueryParams(params),
 		resultHandler = function(response) {
 			var result = {
 				status : "ok"
 			};
 			if (response.statusCode() !== 200) {
 				result.status = "error";
-				result.message = response.statusCode() + ":" + response.statusMessage();
+				result.message = response.statusCode() + ": " + response.statusMessage();
 			}
 			response.dataHandler(function(buff) {
 				result.raw = buff.getString(0,buff.length());
@@ -52,18 +67,36 @@ function sendUpdate(batch, reply) {
 						result.message = e.message;
 					}
 				}
-				reply(result);
+				replier(result);
 			});
-		},
-		body = serializeBatch(_.pick(batch,"add","remove","commit","optimize"));
-
+		};
 	if (collection) {
 		path.push(collection);
 	}
 	path.push("update/json");
-	httpClient.post(path.join("/"),resultHandler)
-		.putHeader("Content-type","text/json")
-		.chunked(true)
+	path = path.join("/");
+	if (queryString) {
+		path += "?" + queryString;
+	}
+	return httpClient.post(path,resultHandler)
+					.putHeader("Content-type","text/json")
+					.chunked(true);
+}
+
+function sendUpdate(batch, reply) {
+	var body = serializeBatch(_.pick(batch.update,"add","delete","commit","optimize")),
+		collection = collectionOrDefault(batch);
+	
+	updateRequest(collection, batch.queryParams, reply)
+		.write(body)
+		.end();
+}
+
+function saveBatch(request,reply) {
+	var body = JSON.stringify(request.documents),
+		collection = collectionOrDefault(request);
+	
+	updateRequest(collection,request.options,reply)
 		.write(body)
 		.end();
 }
@@ -75,13 +108,17 @@ function fetchResults(query,reply) {
 	});
 }
 
+
 function messageHandler(request,reply) {
 	switch (request.action) {
 		case "update":
-			sendUpdate(request.update, reply);
+			sendUpdate(request, reply);
 			break;
 		case "search":
-			fecthResults(request.query,reply);
+			fecthResults(request,reply);
+			break;
+		case "add":
+			saveBatch(request,reply);
 			break;
 		default:
 			reply({
