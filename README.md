@@ -65,9 +65,9 @@ This is a sample message to push documents into the Solr instance:
 	}
 }
 ```
-The _documents_ array will be send to Solr using the [Solr 4 JSON API][UpdateJSON Solr4 Example].
+The __documents__ array will be send to Solr using the [Solr 4 JSON API][UpdateJSON Solr4 Example].
 
-The _options_ object contains any required query param to the update solr endpoint, like commit=true and waitFlush=false. See [Solr UpdateXmlMessages documentation][Solr Update Query] for more options.
+The __options__ object contains any required query param to the update solr endpoint, like commit=true and waitFlush=false. See [Solr UpdateXmlMessages documentation][Solr Update Query] for more options.
 
 Sending commands to Solr
 ------------------------
@@ -110,8 +110,9 @@ The main difference between Solr Update Command and the messages used in this mo
 	options : {}
 }
 ```
-The _update_ key contains the JSON with all the commands interpreted by Solr.
-The _options_ key contains any required query param.
+The __update__ key contains the JSON with all the commands interpreted by Solr.
+
+The __options__ key contains any required query param.
 
 [UpdateJSON Solr4 Example]: https://wiki.apache.org/solr/UpdateJSON#Solr_4.0_Example
 [Solr Update Query]: https://wiki.apache.org/solr/UpdateXmlMessages#Passing_commit_and_commitWithin_parameters_as_part_of_the_URL
