@@ -113,6 +113,6 @@ The main difference between Solr Update Command and the messages used in this mo
 The _update_ key contains the JSON with all the commands interpreted by Solr.
 The _options_ key contains any required query param.
 
-[UpdateJSON Solr4 Example]: https://wiki.apache.org/solr/UpdateJSON#Atomic_Updates
+[UpdateJSON Solr4 Example]: https://wiki.apache.org/solr/UpdateJSON#Solr_4.0_Example
 [Solr Update Query]: https://wiki.apache.org/solr/UpdateXmlMessages#Passing_commit_and_commitWithin_parameters_as_part_of_the_URL
 [UpdateJSON Commands]: https://wiki.apache.org/solr/UpdateJSON#Update_Commands
