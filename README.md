@@ -102,7 +102,10 @@ The main difference between Solr Update Command and the messages used in this mo
 		}],
 		commit: {},
 		optimize: { "waitFlush":false, "waitSearcher":false },
-		delete: [{ id : "2246b960-e8fa-4df9-96ef-7689565de1eb" }, { query : "tags:placerat", commitWithin: 500 }]
+		delete: [
+			{ id : "2246b960-e8fa-4df9-96ef-7689565de1eb" },
+			{ query : "tags:placerat", commitWithin: 500 }
+		]
 	},
 	options : {}
 }
