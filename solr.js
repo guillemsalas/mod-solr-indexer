@@ -83,11 +83,11 @@ function updateRequest(collection,params,replier) {
 					.chunked(true);
 }
 
-function sendUpdate(batch, reply) {
-	var body = serializeBatch(_.pick(batch.update,"add","delete","commit","optimize")),
-		collection = collectionOrDefault(batch);
+function sendUpdate(request, reply) {
+	var body = serializeBatch(_.pick(request.update,"add","delete","commit","optimize")),
+		collection = collectionOrDefault(request);
 	
-	updateRequest(collection, batch.queryParams, reply)
+	updateRequest(collection, request.options, reply)
 		.write(body)
 		.end();
 }
