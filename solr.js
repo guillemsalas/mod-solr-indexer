@@ -32,14 +32,21 @@ function serializeBatch(json) {
 }
 
 function encodeQueryParams(o) {
-    if (typeof o !== 'object') return '';
-    var k, p = [];
-    for (k in o) {
-        if (o.hasOwnProperty(k)) {
-            p.push(encodeURIComponent(k) + '=' + encodeURIComponent(o[k]));
-        }
-    }
-    return p.join('&');
+    var pairs = [],
+		addPair = _.curry(function(key,value) {
+			pairs.push(encodeURIComponent(key)+"="+encodeURIComponent(value));
+		}),
+		encode = function(value,key) {
+			var attach = addPair(key);
+
+			if (_.isArray(value)) {
+				_.each(value,attach);
+			} else {
+				attach(value);
+			}
+		};
+	_.each(params,encode);
+	return pairs.join("&");
 }
 
 function collectionOrDefault(options) {
@@ -101,24 +108,6 @@ function saveBatch(request,reply) {
 		.end();
 }
 
-function serializeQueryParams(params) {
-	var pairs = [],
-		addPair = _.curry(function(key,value) {
-			pairs.push(encodeURIComponent(key)+"="+encodeURIComponent(value));
-		}),
-		encode = function(value,key) {
-			var attach = addPair(key);
-
-			if (_.isArray(value)) {
-				_.each(value,attach);
-			} else {
-				attach(value);
-			}
-		};
-	_.each(params,encode);
-	return pairs.join("&");
-}
-
 function getQueryParams(query) {
 	var params = _.pick(query,"q","sort","start","rows","fq","omitHeader");
 	if (query.fl) {
@@ -136,7 +125,7 @@ function getQueryParams(query) {
 		}
 	}
 	params.wt = "json";
-	return serializeQueryParams(params);
+	return encodeQueryParams(params);
 }
 
 function getSearchPath(collection) {
