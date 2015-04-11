@@ -101,11 +101,80 @@ function saveBatch(request,reply) {
 		.end();
 }
 
-function fetchResults(query,reply) {
-	reply({
-		status : "error",
-		message : "not implemented"
-	});
+function serializeQueryParams(params) {
+	var pairs = [],
+		addPair = _.curry(function(key,value) {
+			pairs.push(encodeURIComponent(key)+"="+encodeURIComponent(value));
+		}),
+		encode = function(value,key) {
+			var attach = addPair(key);
+
+			if (_.isArray(value)) {
+				_.each(value,attach);
+			} else {
+				attach(value);
+			}
+		};
+	_.each(params,encode);
+	return pairs.join("&");
+}
+
+function getQueryParams(query) {
+	var params = _.pick(query,"q","sort","start","rows","fq","omitHeader");
+	if (query.fl) {
+		//keep compatibility with old solr instances
+		params.fl = query.fl.join(",");
+	}
+
+	if (query.facet) {
+		params["facet"] = "on";
+		if (query.facet.field) {
+			params["facet.field"] = query.facet.field;
+		}
+		if (query.facet.query) {
+			params["facet.query"] = query.facet.query;
+		}
+	}
+	params.wt = "json";
+	return serializeQueryParams(params);
+}
+
+function getSearchPath(collection) {
+	var path = [config.solrPath];
+	if (collection) {
+		path.push(collection);
+	}
+	path.push("select");
+	return path.join("/");
+}
+
+function fetchResults(request,reply) {
+	var collection = collectionOrDefault(request),
+		params = getQueryParams(request.query),
+		path = getSearchPath(collection),
+		uri = path + "?" + params,
+		resultHandler = function(response) {
+			var result = {
+				status : "ok"
+			};
+			if (response.statusCode() !== 200) {
+				result.status = "error";
+				result.message = response.statusCode() + ": " + response.statusMessage();
+			}
+			response.dataHandler(function(buff) {
+				result.raw = buff.getString(0,buff.length());
+				try {
+					result.data = JSON.parse(result.raw);
+				} catch(e) {
+					if (result.status === "ok") {
+						result.status = "error";
+						result.message = e.message;
+					}
+				}
+				reply(result);
+			});
+		};
+	httpClient.getNow(uri,requestHandler);
 }
 
 
