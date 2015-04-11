@@ -39,7 +39,37 @@ If no operation is specified (null or undefined), the defaultCollection will be 
 
 Querying data
 -------------
-This operation is used to fetch data from the solr index.
+This operation is used to fetch data from the solr index. It accepts the [Solr Common Query Parameters][Solr Common Query Parameters]. It doesn't provide any specific helper for formatting this parameters, it just constructus the requests and sends back the results. I'm planning to provide a better framework for defining prefiltered/prefaced searchs, but for now it just sends the request back to the solr server.
+
+For now it only support query, sort, start, rows, fq (filter query), fl (field list) and facet search.
+
+This can be a sample search action:
+```
+{
+	action : "search",
+	collection : "collection1",
+	query : {
+		q : "ipsum massa",
+		sort : "id asc",
+		fq : ["owner:33e363ce-b417-47a1-b6f3-cbf74cea096b", "tag:placerat"],
+		fl : ["id","name","description","tags"],
+		facet : {
+			field : ["tags"],
+			query : [
+						"rating:[* TO 20]",
+						"rating:[20 TO 40]",
+						"rating:[40 TO 60]",
+						"rating:[60 TO 80]",
+						"rating:[80 TO 100]"
+					]
+		}
+		omitHeader: false,
+		start : 20,
+		rows : 20,
+
+	}
+}
+```
 
 Adding/updating documents
 -------------------------
@@ -50,13 +80,17 @@ This is a sample message to push documents into the Solr instance:
 	collection : "collection1",
 	documents : [{
 		"id":"9295bb0d-6914-454a-b412-d26485f2f792",
+		"owner":"33e363ce-b417-47a1-b6f3-cbf74cea096b",
 		"name":"productize multiplatform users",
 		"description":"Ipsum elementum amet tortor. Vitae amet vitae sollicitudin facilisis dolor sagittis magna sed.",
+		"rating" : 10,
 		"tags":["lorem","dolor","quis","velit"]
 	},{
 		"id":"2246b960-e8fa-4df9-96ef-7689565de1eb",
+		"owner":"4ddfeee5-0e33-4b2c-a547-c7bad85cd5e0",
 		"name":"aggregate clicks-and-mortar networks",
 		"description":"Ipsum scelerisque. Pulvinar id massa porttitor lacus vitae dolor adipiscing non tortor vel.",
+		"rating" : 50,
 		"tags":["placerat","massa","et","nunc","ante"]
 	}],
 	options : {
@@ -82,11 +116,13 @@ The main difference between Solr Update Command and the messages used in this mo
 		add : [{
 			doc : {
 				"id":"a17e855a-b8f9-4c7d-b596-da6b1d82b801",
+				"owner":"4ddfeee5-0e33-4b2c-a547-c7bad85cd5e0",
 				"name": {
 					"value": "grow back-end action-items",
 					"boost" : 2.3
 				},
 				"description":"Amet amet pretium sagittis. Libero dolor amet odio dui convallis sollicitudin facilisis.",
+				"rating" : 60,
 				"tags":["sollicitudin","malesuada","vestibulum"]
 			}
 		},{
@@ -95,8 +131,10 @@ The main difference between Solr Update Command and the messages used in this mo
 			"boost": 3.45,
 			"doc" : {
 				"id":"86a7e38c-8bc6-4967-880c-10e50d7545bf",
+				"owner":"33e363ce-b417-47a1-b6f3-cbf74cea096b",
 				"name":"enhance seamless experiences",
 				"description":"Tincidunt et nullam pulvinar ipsum orci massa consequat porta morbi.",
+				"rating" : 50,
 				"tags":["molestie","amet","odio"]
 			}
 		}],
@@ -114,6 +152,7 @@ The __update__ key contains the JSON with all the commands interpreted by Solr.
 
 The __options__ key contains any required query param.
 
+[Solr Common Query Parameters]: https://wiki.apache.org/solr/CommonQueryParameters
 [UpdateJSON Solr4 Example]: https://wiki.apache.org/solr/UpdateJSON#Solr_4.0_Example
 [Solr Update Query]: https://wiki.apache.org/solr/UpdateXmlMessages#Passing_commit_and_commitWithin_parameters_as_part_of_the_URL
 [UpdateJSON Commands]: https://wiki.apache.org/solr/UpdateJSON#Update_Commands
