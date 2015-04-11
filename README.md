@@ -66,7 +66,6 @@ This can be a sample search action:
 		omitHeader: false,
 		start : 20,
 		rows : 20,
-
 	}
 }
 ```
