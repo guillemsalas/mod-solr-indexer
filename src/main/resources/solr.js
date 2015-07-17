@@ -4,18 +4,18 @@ var eb = require('vertx/event_bus'),
 	vertx = require("vertx"),
 	_ = require("libs/lodash"),
 	config = _.merge({
-		solrHost: 'localhost',
-		solrPort: '8983',
-		solrPath: '/solr',
+		host: 'localhost',
+		port: '8983',
+		path: '/solr',
 		defaultCollection : "",
 		keepalive: true,
 		maxConnections: 10,
-		solrBusAddr: 'gzzz.solr-persistor',
+		address: 'gzzz.solrindexer',
 	}, container.config),
 	httpClient = (function() {
 		var client = vertx.createHttpClient()
-			.host(config.solrHost)
-			.port(config.solrPort);
+			.host(config.host)
+			.port(config.port);
 		return config.keepalive ?
 					client.maxPoolSize(config.maxConnections) :
 					client.keepalive(false);
@@ -54,7 +54,7 @@ function collectionOrDefault(options) {
 }
 
 function updateRequest(collection,params,replier) {
-	var path = [config.solrPath],
+	var path = [config.path],
 		queryString = encodeQueryParams(params),
 		resultHandler = function(response) {
 			var result = {
@@ -129,7 +129,7 @@ function getQueryParams(query) {
 }
 
 function getSearchPath(collection) {
-	var path = [config.solrPath];
+	var path = [config.path];
 	if (collection) {
 		path.push(collection);
 	}
@@ -186,4 +186,4 @@ function messageHandler(request,reply) {
 	}
 }
 
-eb.registerHandler(config.solrBusAddr, messageHandler);
+eb.registerHandler(config.address, messageHandler);

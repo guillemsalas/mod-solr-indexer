@@ -13,13 +13,13 @@ This module have the following configuration options:
 
 | Property          | Default value       |                                                                               |
 | ----------------- | ------------------- | ----------------------------------------------------------------------------- |
-| solrHost          | "localhost"         | Hostname of the solr host                                                     |
-| solrPort          | 8983                | Port where solr is running                                                    |
-| solrPath          | "/solr"             | Base path to solr instance                                                    |
+| host              | "localhost"         | Hostname of the solr host                                                     |
+| port              | 8983                | Port where solr is running                                                    |
+| path              | "/solr"             | Base path to solr instance                                                    |
 | defaultCollection | ""                  | Default collection to query                                                   |
 | keepalive         | true                | Use keepalive to maintain a pool of HTTP connections with solr                |
 | maxConnections    | 10                  | Max number of connections in the pool. It is ignored if keepalive is disabled |
-| solrBusAddr       | "gzzz.solr-indexer" | Vert.x Bus address where listen to requests                                   |
+| address           | "gzzz.solrindexer"  | Vert.x Bus address where listen to requests                                   |
 
 Note that this module only accepts a single solr host to interact with. In case you need to interact with multiple Solr instances, you should deploy multiple verticle instances with the correct configuration on each.
 You can reuse the solrBusAddr and the EventBus will do the loadbalancing between instances.
