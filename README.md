@@ -151,6 +151,23 @@ The __update__ key contains the JSON with all the commands interpreted by Solr.
 
 The __options__ key contains any required query param.
 
+TODO
+====
+
+This is a alpha version of this functionality and it just fits the needs of a small university project. Lots of improvements are pending:
+
+* Improve general response formatting: error handling/reporting, response message structure
+
+* Offer API as imported module an not just as event bus listener
+
+* Allow upload of documents using buffer instead of on memory strings
+
+* Parse results and stream them into buffer instead of on memory strings
+
+* Increase query capabilites by implementing/ensuring compatibility of more solr query params
+
+Any suggestion is welcome!
+
 [Solr Common Query Parameters]: https://wiki.apache.org/solr/CommonQueryParameters
 [UpdateJSON Solr4 Example]: https://wiki.apache.org/solr/UpdateJSON#Solr_4.0_Example
 [Solr Update Query]: https://wiki.apache.org/solr/UpdateXmlMessages#Passing_commit_and_commitWithin_parameters_as_part_of_the_URL
