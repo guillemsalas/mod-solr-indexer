@@ -16,7 +16,7 @@ This module have the following configuration options:
 | host              | "localhost"         | Hostname of the solr host                                                     |
 | port              | 8983                | Port where solr is running                                                    |
 | path              | "/solr"             | Base path to solr instance                                                    |
-| defaultCollection | ""                  | Default collection to query                                                   |
+| defaultCollection | ""                  | Default collection/core to query                                              |
 | keepalive         | true                | Use keepalive to maintain a pool of HTTP connections with solr                |
 | maxConnections    | 10                  | Max number of connections in the pool. It is ignored if keepalive is disabled |
 | address           | "gzzz.solrindexer"  | Vert.x Bus address where listen to requests                                   |
@@ -34,8 +34,8 @@ All messages have the same shared structure:
 }
 ```
 
-The action defines the operation to run against the solr server. The collection defines in wich collection we should send the operation.
-If no operation is specified (null or undefined), the defaultCollection will be used.
+The action defines the operation to run against the solr server. The collection defines in wich collection/core we should send the operation.
+If no collection is specified (any non string value), the defaultCollection will be used. Empty string will be respected as a collection when building the endpoint path.
 
 Querying data
 -------------
