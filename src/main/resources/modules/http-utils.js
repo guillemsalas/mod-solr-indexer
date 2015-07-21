@@ -50,12 +50,12 @@ exports.post = function(path,params,body,callback) {
 
 exports.get_path = function(action, collection) {
 	var path = [config.path],
-		col = collection == null ?
-				config.defaultCollection
-				: collection;
+		col = _.isString(collection) ?
+				collection.trim()
+				: config.defaultCollection;
 
-	if (collection)
-		path.push(collection);
+	if (col !== "")
+		path.push(col);
 
 	path.push(action);
 
