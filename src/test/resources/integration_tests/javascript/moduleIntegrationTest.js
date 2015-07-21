@@ -13,6 +13,11 @@ var vertxTests = require("vertx_tests");
 var vassert = require("vertx_assert");
 
 var script = this;
+
+
+function testDummy() {
+	vassert.testComplete();
+}
 // The script is execute for each test, so this will deploy the module for each one
 // Deploy the module - the System property `vertx.modulename` will contain the name of the module so you
 // don't have to hardecode it in your tests
