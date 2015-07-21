@@ -2,32 +2,34 @@ var _ = require("libs/lodash"),
 	client = require("modules/http-client");
 
 
-exports.to_query_string = function(params) {
-	var keySerializer = _.curry(function(key,value) {
-			return encodeURIComponent(key)+"="+encodeURIComponent(value);
-		}),
-		encode = function(value,key) {
-			var serialize = keySerializer(key);
-			return _.isArray(value) ?
-						_.map(value,serialize).join("&")
-						: serialize(value);
-		};
+var query_string_key_serializer = _.curry(function(key,value) {
+	return encodeURIComponent(key)+"="+encodeURIComponent(value);
+});
 
-	return _.map(params,encode).join("&");
+var encode_query_param = function(value,key) {
+	var serialize = query_string_key_serializer(key);
+	return _.isArray(value) ?
+				_.map(value,serialize).join("&")
+				: serialize(value);
+};
+
+exports.to_query_string = function(params) {
+	return _.map(params,encode_query_param).join("&");
+};
+
+var json_body_key_serializer = _.curry(function(key,value) {
+	return JSON.stringify(key)+':'+JSON.stringify(value);
+});
+
+var encode_json_body_key = function(value,key) {
+	var serialize = json_body_key_serializer(key);
+	return _.isArray(value) ?
+				_.map(value,serialize).join(",")
+				: serialize(value);
 };
 
 exports.to_json_body = function(body) {
-	var keySerializer = _.curry(function(key,value) {
-			return JSON.stringify(key)+':'+JSON.stringify(value);
-		}),
-		encode = function(value,key) {
-			var serialize = keySerializer(key);
-			return _.isArray(value) ?
-						_.map(value,serialize).join(",")
-						: serialize(value);
-		};
-
-	return "{" + _.map(body,encode).join(",") + "}";
+	return "{" + _.map(body,encode_json_body_key).join(",") + "}";
 };
 
 exports.get = function(path,params,callback) {
