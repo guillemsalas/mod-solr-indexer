@@ -42,10 +42,9 @@ var get_handler = _.curry(function(reply, response) {
 		result.message = response.statusCode() + ": " + response.statusMessage();
 	}
 	response.dataHandler(function(buff) {
-		log.info("dataHandler");
 		var raw = buff.getString(0,buff.length());
 		try {
-			result.data = JSON.parse(result.raw);
+			result.data = JSON.parse(raw);
 		} catch(e) {
 			if (result.status === "ok") {
 				result.status = "error";
@@ -56,7 +55,7 @@ var get_handler = _.curry(function(reply, response) {
 		}
 
 		if (result.status === "error") {
-			log.warn("Solr server error. Status "+result.message);
+			log.warn("Solr server error. Status "+result.message+"\n"+raw);
 		}
 		reply(result);
 	});
