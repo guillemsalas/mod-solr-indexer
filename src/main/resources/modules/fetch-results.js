@@ -1,5 +1,5 @@
-var config = require("modules/configuration"),
-	http = require("modules/http-utils"),
+var http = require("modules/http-utils"),
+	log = require("vertx/container").logger,
 	_ = require("libs/lodash");
 
 
@@ -23,32 +23,9 @@ function process_params(query) {
 	return params;
 }
 
-var get_handler = _.curry(function(reply, response) {
-	var result = {
-		status : "ok"
-	};
-	if (response.statusCode() !== 200) {
-		result.status = "error";
-		result.message = response.statusCode() + ": " + response.statusMessage();
-	}
-	response.dataHandler(function(buff) {
-		result.raw = buff.getString(0,buff.length());
-		try {
-			result.data = JSON.parse(result.raw);
-		} catch(e) {
-			if (result.status === "ok") {
-				result.status = "error";
-				result.message = e.message;
-			}
-		}
-		reply(result);
-	});
-});
-
 module.exports = function(request, reply) {
 	var path = http.get_path("select",request.collection),
-		params = process_params(request.query),
-		handler = get_handler(reply);
+		params = process_params(request.query);
 
-	http.get(path,params,handler);
+	http.get(path,params,reply);
 };
