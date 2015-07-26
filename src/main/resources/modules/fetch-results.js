@@ -27,5 +27,8 @@ module.exports = function(request, reply) {
 	var path = http.get_path("select",request.collection),
 		params = process_params(request.query);
 
+	if (log.isDebugEnabled()) {
+		log.debug("Sending fetch request path="+path+" params="+JSON.stringify(params));
+	}
 	http.get(path,params,reply);
 };

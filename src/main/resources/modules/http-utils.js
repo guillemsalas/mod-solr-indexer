@@ -72,6 +72,9 @@ var get_exception_handler = _.curry(function(reply,err) {
 exports.get = function(path,params,callback) {
 	var query = exports.to_query_string(params),
 		uri = path + "?" + query;
+		if (log.isDebugEnabled()) {
+			log.debug("Sending GET request to "+uri);
+		}
 		client.get(uri,get_handler(callback))
 			.exceptionHandler(get_exception_handler(callback))
 			.end();
@@ -81,6 +84,9 @@ exports.post = function(path,params,body,callback) {
 	var query = exports.to_query_string(params),
 		uri = path + "?" + query;
 
+	if (log.isDebugEnabled()) {
+		log.debug("Sending POST request to path="+uri+" body="+body);
+	}
 	client.post(uri,get_handler(callback))
 		.putHeader("Content-type","text/json")
 		.chunked(true)
