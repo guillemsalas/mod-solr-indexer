@@ -6,7 +6,7 @@
   <groupId>com.github.guillemsalas</groupId>
   <artifactId>mod-solr-indexer</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.2</version>
   <name>Project - mod-solr-indexer</name>
   <url>http://maven.apache.org</url>
 
