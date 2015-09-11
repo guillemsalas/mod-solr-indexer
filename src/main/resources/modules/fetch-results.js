@@ -4,10 +4,14 @@ var http = require("modules/http-utils"),
 
 
 function process_params(query) {
-	var params = _.pick(query,"q","sort","start","rows","fq","omitHeader");
+	var params = _.pick(query,"q","sort","start","rows","fq",'qf',"omitHeader");
 	if (query.fl) {
 		//keep compatibility with old solr instances
 		params.fl = query.fl.join(",");
+	}
+
+	if (params.qf) {
+		params.defType='edismax';
 	}
 
 	if (query.facet) {
