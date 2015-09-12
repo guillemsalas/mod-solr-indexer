@@ -9,4 +9,4 @@ log.info("Http client initialized to connect with solr at http://"+config.host+"
 
 module.exports = config.keepalive ?
 					client.maxPoolSize(config.maxConnections) :
-					client.keepalive(false);
+					client.keepAlive(false);
