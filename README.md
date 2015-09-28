@@ -41,7 +41,7 @@ Querying data
 -------------
 This operation is used to fetch data from the solr index. It accepts the [Solr Common Query Parameters][Solr Common Query Parameters]. It doesn't provide any specific helper for formatting this parameters, it just constructus the requests and sends back the results. I'm planning to provide a better framework for defining prefiltered/prefaced searchs, but for now it just sends the request back to the solr server.
 
-For now it only support q, sort, start, rows, fq (filter query), fl (field list) qf (edismax boots) and facet search.
+For now it only support q, sort, start, rows, fq (filter query), fl (field list) qf (edismax boost) and facet search.
 
 This can be a sample search action:
 ```
